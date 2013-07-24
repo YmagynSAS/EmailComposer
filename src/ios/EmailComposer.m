@@ -66,7 +66,7 @@
     if (picker != nil) {  	
         [self.viewController presentModalViewController:picker animated:YES];
     }
-    [picker release];
+    //[picker release];
 }
 
 
@@ -99,7 +99,7 @@
 	
 	NSString* jsString = [[NSString alloc] initWithFormat:@"window.plugins.emailComposer._didFinishWithResult(%d);",webviewResult];
 	[self writeJavascript:jsString];
-	[jsString release];
+	//[jsString release];
 	
 }
 
