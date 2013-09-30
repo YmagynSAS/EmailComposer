@@ -16,6 +16,6 @@
     
 }
 
-- (void) showEmailComposer:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) showEmailComposer:(CDVInvokedUrlCommand*)command
 
 @end

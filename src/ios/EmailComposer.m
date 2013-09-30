@@ -12,10 +12,10 @@
 @implementation EmailComposer
 
 
-- (void) showEmailComposer:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void) showEmailComposer:(CDVInvokedUrlCommand*)command
 {	
 	// NSUInteger argc = [arguments count];
-	
+	NSMutableDictionary* options = (NSMutableDictionary*)[command argumentAtIndex:0];
 	NSString* toRecipientsString = [options valueForKey:@"toRecipients"];
 	NSString* ccRecipientsString = [options valueForKey:@"ccRecipients"];
 	NSString* bccRecipientsString = [options valueForKey:@"bccRecipients"];
