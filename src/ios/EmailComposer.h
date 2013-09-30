@@ -16,6 +16,6 @@
     
 }
 
-- (void) showEmailComposer:(CDVInvokedUrlCommand*)command
+- (void) showEmailComposer:(CDVInvokedUrlCommand*)command;
 
 @end
