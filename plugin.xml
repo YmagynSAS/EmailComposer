@@ -7,20 +7,19 @@
     
     <name>Email Composer</name>
     
-    <!-- TODO js-module -->
-    <asset src="www/EmailComposer.js" target="js/emailComposer.js"/>
-    
+    <js-module src="www/EmailComposer.js" name="EmailComposer">
+        <clobbers target="EmailComposer" />
+    </js-module>
+
+    <!-- ios -->
     <platform name="ios">
-                
-        <config-file target="config.xml" parent="plugins">
-            <plugin name="EmailComposer" value="EmailComposer" />
+        <config-file target="config.xml" parent="/*">
+            <feature name="EmailComposer">
+                <param name="ios-package" value="EmailComposer"/>
+            </feature>
         </config-file>
 
-        <header-file src="src/ios/EmailComposer.h" target-dir="EmailComposer" />
-        <source-file src="src/ios/EmailComposer.m" target-dir="EmailComposer" />
-                
-        <!-- frameworks -->
-        <framework src="MessageUI.framework" />
-        
+        <source-file src="src/ios/EmailComposer.m" />
+        <header-file src="src/ios/EmailComposer.h" />
     </platform>
 </plugin>
