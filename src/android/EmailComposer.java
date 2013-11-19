@@ -1,4 +1,4 @@
-package org.apache.cordova.emailComposer;
+package org.apache.cordova.emailcomposer;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
