@@ -1,5 +1,7 @@
 package org.apache.cordova.emailcomposer;
 
+import java.util.ArrayList;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.LOG;
@@ -16,14 +18,11 @@ public class EmailComposer extends CordovaPlugin {
         public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
                 if ("showEmailComposer".equals(action)) {
-                        try {
                                 JSONObject parameters = args.getJSONObject(0);
                                 if (parameters != null) {
                                         sendEmail(parameters);
                                 }
-                        } catch (Exception e) {
-                                LOG.e("EmailComposer", "Unable to send email");
-                        }
+                        
                         callbackContext.success();
                         return true;
                 }
@@ -32,15 +31,13 @@ public class EmailComposer extends CordovaPlugin {
 
         private void sendEmail(JSONObject parameters) {
                 
-                final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
-                
-                //String callback = parameters.getString("callback");
+                final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);               
 
                 boolean isHTML = false;
                 try {
                         isHTML = parameters.getBoolean("bIsHTML");
                 } catch (Exception e) {
-                        LOG.e("EmailComposer", "Error handling isHTML param: " + e.toString());
+                		isHTML = false;
                 }
 
                 if (isHTML) {
@@ -63,10 +60,12 @@ public class EmailComposer extends CordovaPlugin {
                 try {
                         String body = parameters.getString("body");
                         if (body != null && body.length() > 0) {
+                        	ArrayList<String> b = new ArrayList<String>();
+                        	b.add(body);
                                 if (isHTML) {
                                         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml(body));
                                 } else {
-                                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
+                                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, b);
                                 }
                         }
                 } catch (Exception e) {
@@ -75,12 +74,13 @@ public class EmailComposer extends CordovaPlugin {
 
                 // setting TO recipients
                 try {
-                        JSONArray toRecipients = parameters.getJSONArray("toRecipients");
+                        String toRecipients = parameters.getString("toRecipients");
                         if (toRecipients != null && toRecipients.length() > 0) {
-                                String[] to = new String[toRecipients.length()];
-                                for (int i=0; i<toRecipients.length(); i++) {
-                                        to[i] = toRecipients.getString(i);
-                                }
+                        	 	ArrayList<String> to = new ArrayList<String>();
+                        	 	String[] toTemp = toRecipients.split(";");
+                        	 	for(int i = 0; i<toTemp.length; i++){
+                        	 		to.add(toTemp[i]);
+                        	 	}
                                 emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, to);
                         }
                 } catch (Exception e) {
@@ -89,12 +89,13 @@ public class EmailComposer extends CordovaPlugin {
 
                 // setting CC recipients
                 try {
-                        JSONArray ccRecipients = parameters.getJSONArray("ccRecipients");
+                	String ccRecipients = parameters.getString("ccRecipients");
                         if (ccRecipients != null && ccRecipients.length() > 0) {
-                                String[] cc = new String[ccRecipients.length()];
-                                for (int i=0; i<ccRecipients.length(); i++) {
-                                        cc[i] = ccRecipients.getString(i);
-                                }
+                        		ArrayList<String> cc = new ArrayList<String>();
+                        	 	String[] ccTemp = ccRecipients.split(";");
+                        	 	for(int i = 0; i<ccTemp.length; i++){
+                        	 		cc.add(ccTemp[i]);
+                        	 	}
                                 emailIntent.putExtra(android.content.Intent.EXTRA_CC, cc);
                         }
                 } catch (Exception e) {
@@ -103,19 +104,20 @@ public class EmailComposer extends CordovaPlugin {
 
                 // setting BCC recipients
                 try {
-                        JSONArray bccRecipients = parameters.getJSONArray("bccRecipients");
+                	String bccRecipients = parameters.getString("bccRecipients");
                         if (bccRecipients != null && bccRecipients.length() > 0) {
-                                String[] bcc = new String[bccRecipients.length()];
-                                for (int i=0; i<bccRecipients.length(); i++) {
-                                        bcc[i] = bccRecipients.getString(i);
-                                }
+                                ArrayList<String> bcc = new ArrayList<String>();
+                        	 	String[] bccTemp = bccRecipients.split(";");
+                        	 	for(int i = 0; i<bccTemp.length; i++){
+                        	 		bcc.add(bccTemp[i]);
+                        	 	}
                                 emailIntent.putExtra(android.content.Intent.EXTRA_BCC, bcc);
                         }
                 } catch (Exception e) {
                         LOG.e("EmailComposer", "Error handling bccRecipients param: " + e.toString());
                 }
                 
-                this.cordova.startActivityForResult(this, emailIntent, 0);
+                 this.cordova.getActivity().startActivity(emailIntent);
         }
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent intent) {
